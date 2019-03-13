@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="utf-8">
+  
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <title>
+    Java-Springboot-logback-xml配置文件详解 |
+    
+    MicoCube</title>
+  
+    <link rel="shortcut icon" href="/favicon.ico">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  
+    <link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+  
+  <script src="/js/pace.min.js"></script>
+</head>
+</html>
+<body>
+<main class="content">
+  <section class="outer">
+  <article id="post-springboot/Java-Springboot-logback-xml配置文件详解" class="article article-type-post" itemscope itemprop="blogPost">
+
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Java-Springboot-logback-xml配置文件详解
+    </h1>
+  
+
+      </header>
+    
+
+    
+      <div class="article-meta">
+        <a href="/2019/03/13/springboot/Java-Springboot-logback-xml配置文件详解/" class="article-date">
+  <time datetime="2019-03-13T07:03:32.000Z" itemprop="datePublished">2019-03-13</time>
+</a>
+        
+      </div>
+    
+
+    <div class="article-entry" itemprop="articleBody">
+      
+      
+      
+        <ul>
+<li><p>依赖</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">&lt;!-- springboot 的springboot-core已经依赖了logback-core和logback-classic --&gt;</span><br><span class="line">&lt;dependency&gt;</span><br><span class="line">&lt;groupId&gt;org.slf4j&lt;/groupId&gt;</span><br><span class="line">&lt;artifactId&gt;slf4j-api&lt;/artifactId&gt;</span><br><span class="line">&lt;version&gt;1.7.25&lt;/version&gt;</span><br><span class="line">&lt;/dependency&gt;</span><br><span class="line">&lt;dependency&gt;</span><br><span class="line">&lt;groupId&gt;org.slf4j&lt;/groupId&gt;</span><br><span class="line">&lt;artifactId&gt;log4j-over-slf4j&lt;/artifactId&gt;</span><br><span class="line">&lt;version&gt;1.7.25&lt;/version&gt;</span><br><span class="line">&lt;/dependency&gt;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>Spring Boot应用将自动使用logback作为应用日志框架，Spring Boot启动的时候，由org.springframework.boot.logging.Logging-Application-Listener根据情况初始化并使用。</p>
+</li>
+<li>日志级别<br>从低到高分为TRACE &lt; DEBUG &lt; INFO &lt; WARN &lt; ERROR &lt; FATAL，如果设置为WARN，则低于WARN的信息都不会输出。</li>
+<li>自定义日志配置<br>由于日志服务一般都在ApplicationContext创建前就初始化了，它并不是必须通过Spring的配置文件控制。因此通过系统属性和传统的Spring Boot外部配置文件依然可以很好的支持日志控制和管理。<br>根据不同的日志系统，你可以按如下规则组织配置文件名，就能被正确加载：</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>日志框架</th>
+<th>配置文件名</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Logback</td>
+<td>logback-spring.xml, logback-spring.groovy, logback.xml, logback.groovy</td>
+</tr>
+<tr>
+<td>Log4j</td>
+<td>log4j-spring.properties, log4j-spring.xml, log4j.properties, log4j.xml</td>
+</tr>
+<tr>
+<td>Log4j2</td>
+<td>log4j2-spring.xml, log4j2.xml</td>
+</tr>
+<tr>
+<td>JDK (Java Util Logging)</td>
+<td>logging.properties</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>Spring Boot官方推荐优先使用带有-spring的文件名作为你的日志配置（如使用logback-spring.xml，而不是logback.xml），命名为logback-spring.xml的日志配置文件，spring boot可以为它添加一些spring boot特有的配置项（下面会提到）。<br>上面是默认的命名规则，并且放在src/main/resources下面即可。如果你即想完全掌控日志配置，但又不想用logback.xml作为Logback配置的名字，可以在application.properties配置文件里面通过logging.config属性指定自定义的名字：<code>logging.config=classpath:logback.xml</code></li>
+<li><p>logback.xml 示例</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</span><br><span class="line">&lt;!DOCTYPE xml&gt;</span><br><span class="line">&lt;configuration  scan=&quot;true&quot; scanPeriod=&quot;60 seconds&quot; debug=&quot;false&quot;&gt;</span><br><span class="line">&lt;contextName&gt;logback&lt;/contextName&gt;</span><br><span class="line">&lt;property name=&quot;log.path&quot; value=&quot;log&quot; /&gt;</span><br><span class="line">&lt;!--输出到控制台--&gt;</span><br><span class="line">&lt;appender name=&quot;console&quot; class=&quot;ch.qos.logback.core.ConsoleAppender&quot;&gt;</span><br><span class="line">&lt;!-- &lt;filter class=&quot;ch.qos.logback.classic.filter.ThresholdFilter&quot;&gt;</span><br><span class="line">&lt;level&gt;ERROR&lt;/level&gt;</span><br><span class="line">&lt;/filter&gt;--&gt;</span><br><span class="line">&lt;encoder&gt;</span><br><span class="line">&lt;pattern&gt;%d&#123;HH:mm:ss.SSS&#125; %contextName [%thread] %-5level %logger&#123;36&#125; - %msg%n&lt;/pattern&gt;</span><br><span class="line">&lt;/encoder&gt;</span><br><span class="line">&lt;/appender&gt;</span><br><span class="line"></span><br><span class="line">&lt;!--输出到文件--&gt;</span><br><span class="line">&lt;appender name=&quot;file&quot; class=&quot;ch.qos.logback.core.rolling.RollingFileAppender&quot;&gt;</span><br><span class="line">&lt;rollingPolicy class=&quot;ch.qos.logback.core.rolling.TimeBasedRollingPolicy&quot;&gt;</span><br><span class="line">&lt;fileNamePattern&gt;$&#123;log.path&#125;/logback.%d&#123;yyyy-MM-dd&#125;.log&lt;/fileNamePattern&gt;</span><br><span class="line">&lt;/rollingPolicy&gt;</span><br><span class="line">&lt;encoder&gt;</span><br><span class="line">&lt;pattern&gt;%d&#123;HH:mm:ss.SSS&#125; %contextName [%thread] %-5level %logger&#123;36&#125; - %msg%n&lt;/pattern&gt;</span><br><span class="line">&lt;/encoder&gt;</span><br><span class="line">&lt;/appender&gt;</span><br><span class="line"></span><br><span class="line">&lt;root level=&quot;info&quot;&gt;</span><br><span class="line">&lt;appender-ref ref=&quot;console&quot; /&gt;</span><br><span class="line">&lt;appender-ref ref=&quot;file&quot; /&gt;</span><br><span class="line">&lt;/root&gt;</span><br><span class="line"></span><br><span class="line">&lt;!-- logback为java中的包 --&gt;</span><br><span class="line">&lt;logger name=&quot;com.mico.emptyspringboot.controller&quot;/&gt;</span><br><span class="line">&lt;!--logback.LogbackDemo：类的全路径 --&gt;</span><br><span class="line">&lt;logger name=&quot;com.mico.emptyspringboot.controller.UserController&quot; level=&quot;WARN&quot; additivity=&quot;false&quot;&gt;</span><br><span class="line">&lt;appender-ref ref=&quot;console&quot;/&gt;</span><br><span class="line">&lt;/logger&gt;</span><br><span class="line">&lt;/configuration&gt;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>根节点<code>&lt;configuration&gt;</code>包含的属性</p>
+</li>
+<li><p>scan：当此属性设置为true时，配置文件如果发生改变，将会被重新加载，默认值为true。</p>
+</li>
+<li><p>scanPeriod：设置监测配置文件是否有修改的时间间隔，如果没有给出时间单位，默认单位是毫秒。当scan为true时，此属性生效。默认的时间间隔为1分钟。</p>
+</li>
+<li><p>debug：当此属性设置为true时，将打印出logback内部日志信息，实时查看logback运行状态。默认值为false。</p>
+</li>
+<li><p>根节点<code>&lt;configuration&gt;</code>的子节点：<code>&lt;configuration&gt;</code>下面一共有2个属性，3个子节点，分别是：</p>
+</li>
+<li><p>设置上下文名称<code>&lt;contextName&gt;</code></p>
+</li>
+</ul>
+<p>每个logger都关联到logger上下文，默认上下文名称为“default”。但可以使用设置成其他名字，用于区分不同应用程序的记录。一旦设置，不能修改,可以通过%contextName来打印日志上下文名称。<code>&lt;contextName&gt;logback&lt;/contextName&gt;</code></p>
+<ul>
+<li><p>设置变量<code>&lt;property&gt;</code> 用来定义变量值的标签，有两个属性，name和value；其中name的值是变量的名称，value的值时变量定义的值。通过定义的值会被插入到logger上下文中。定义变量后，可以使“${}”来使用变量。<code>&lt;property name=&quot;log.path&quot; value=&quot;log&quot; /&gt;</code></p>
+</li>
+<li><p>子节点<code>&lt;appender&gt;</code></p>
+</li>
+</ul>
+<p>appender用来格式化日志输出节点，有俩个属性name和class，class用来指定哪种输出策略，常用就是控制台输出策略和文件输出策略。<br>控制台输出ConsoleAppender：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">&lt;!--输出到控制台--&gt;</span><br><span class="line">&lt;appender name=&quot;console&quot; class=&quot;ch.qos.logback.core.ConsoleAppender&quot;&gt;</span><br><span class="line">&lt;filter class=&quot;ch.qos.logback.classic.filter.ThresholdFilter&quot;&gt;</span><br><span class="line">&lt;level&gt;ERROR&lt;/level&gt;</span><br><span class="line">&lt;/filter&gt;</span><br><span class="line">&lt;encoder&gt;</span><br><span class="line">&lt;pattern&gt;%d&#123;HH:mm:ss.SSS&#125; %contextName [%thread] %-5level %logger&#123;36&#125; - %msg%n&lt;/pattern&gt;</span><br><span class="line">&lt;/encoder&gt;</span><br><span class="line">&lt;/appender&gt;</span><br></pre></td></tr></table></figure></p>
+<ul>
+<li><code>&lt;encoder&gt;</code>表示对日志进行编码：</li>
+<li><code>%d{HH: mm:ss.SSS}</code>——日志输出时间。</li>
+<li><code>%thread</code>——输出日志的进程名字，这在Web应用以及异步任务处理中很有用。</li>
+<li><code>%-5level</code>——日志级别，并且使用5个字符靠左对齐。</li>
+<li><code>%logger{36}</code>——日志输出者的名字。</li>
+<li><code>%msg</code>——日志消息。</li>
+<li><code>%n</code>——平台的换行符。</li>
+</ul>
+<p>ThresholdFilter为系统定义的拦截器，例如我们用ThresholdFilter来过滤掉ERROR级别以下的日志不输出到文件中。如果不用记得注释掉，不然你控制台会发现没日志</p>
+<ul>
+<li><p>输出到文件RollingFileAppender：<br>另一种常见的日志输出到文件，随着应用的运行时间越来越长，日志也会增长的越来越多，将他们输出到同一个文件并非一个好办法。RollingFileAppender用于切分文件日志：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">&lt;!--输出到文件--&gt;</span><br><span class="line">&lt;appender name=&quot;file&quot; class=&quot;ch.qos.logback.core.rolling.RollingFileAppender&quot;&gt;</span><br><span class="line">&lt;rollingPolicy class=&quot;ch.qos.logback.core.rolling.TimeBasedRollingPolicy&quot;&gt;</span><br><span class="line">&lt;fileNamePattern&gt;$&#123;log.path&#125;/logback.%d&#123;yyyy-MM-dd&#125;.log&lt;/fileNamePattern&gt;</span><br><span class="line">&lt;maxHistory&gt;30&lt;/maxHistory&gt;</span><br><span class="line">&lt;totalSizeCap&gt;1GB&lt;/totalSizeCap&gt;</span><br><span class="line">&lt;/rollingPolicy&gt;</span><br><span class="line">&lt;encoder&gt;</span><br><span class="line">&lt;pattern&gt;%d&#123;HH:mm:ss.SSS&#125; %contextName [%thread] %-5level %logger&#123;36&#125; - %msg%n&lt;/pattern&gt;</span><br><span class="line">&lt;/encoder&gt;</span><br><span class="line">&lt;/appender&gt;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>其中重要的是rollingPolicy的定义：</p>
+</li>
+</ul>
+<ul>
+<li><p><code>&lt;fileNamePattern&gt;${log.path}/logback.%d{yyyy-MM-dd}.log&lt;/fileNamePattern&gt;</code>定义了日志的切分方式——把每一天的日志归档到一个文件中；</p>
+</li>
+<li><p><code>&lt;maxHistory&gt;30&lt;/maxHistory&gt;</code>表示只保留最近30天的日志，以防止日志填满整个磁盘空间。同理，可以使用<code>%d{yyyy-MM-dd_HH-mm}</code>来定义精确到分的日志切分方式；</p>
+</li>
+<li><p><code>&lt;totalSizeCap&gt;1GB&lt;/totalSizeCap&gt;</code>用来指定日志文件的上限大小，例如设置为1GB的话，那么到了这个值，就会删除旧的日志。</p>
+</li>
+<li><p>logback 每天生成和大小生成冲突的问题可以看<a href="http://blog.csdn.net/wujianmin577/article/details/68922545" target="_blank" rel="noopener">这个解答</a>。</p>
+</li>
+</ul>
+<ul>
+<li><p>子节点<code>&lt;root&gt;</code><br>root节点是必选节点，用来指定最基础的日志输出级别，只有一个level属性，用来设置打印级别，大小写无关：TRACE, DEBUG, INFO, WARN, ERROR, ALL 和 OFF，不能设置为INHERITED或者同义词NULL。默认是DEBUG。可以包含零个或多个元素，标识这个appender将会添加到这个logger。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&lt;root level=&quot;debug&quot;&gt;</span><br><span class="line">&lt;appender-ref ref=&quot;console&quot; /&gt;</span><br><span class="line">&lt;appender-ref ref=&quot;file&quot; /&gt;</span><br><span class="line">&lt;/root&gt;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>子节点<code>&lt;logger&gt;</code></p>
+</li>
+</ul>
+<p><code>&lt;logger&gt;</code>用来设置某一个包或者具体的某一个类的日志打印级别、以及指定<code>&lt;appender&gt;</code>。<code>&lt;logger&gt;</code>仅有一个name属性，一个可选的level和一个可选的addtivity属性。</p>
+<ul>
+<li><p><code>name</code>：用来指定受此logger约束的某一个包或者具体的某一个类。</p>
+</li>
+<li><p><code>level</code>：用来设置打印级别，大小写无关：TRACE, DEBUG, INFO, WARN, ERROR, ALL 和 OFF，还有一个特俗值INHERITED或者同义词NULL，代表强制执行上级的级别。如果未设置此属性，那么当前logger将会继承上级的级别。</p>
+</li>
+<li><p><code>addtivity</code>：是否向上级logger传递打印信息。默认是true。</p>
+</li>
+</ul>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2019/03/13/springboot/Java-Springboot-logback-xml配置文件详解/" data-id="cjt714hem0001f83dpyavro5c" class="article-share-link">分享</a>
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/SpringBoot全家桶/">SpringBoot全家桶</a></li></ul>
+
+    </footer>
+
+  </div>
+
+  
+    
+  <nav class="article-nav">
+    
+      <a href="/2019/03/13/springboot/Java-Maven+Idea-构建SpringBoot项目(光速入门)/" class="article-nav-link">
+        <strong class="article-nav-caption">前一篇</strong>
+        <div class="article-nav-title">
+          
+            Java-Maven+Idea-构建SpringBoot项目(光速入门)
+          
+        </div>
+      </a>
+    
+    
+      <a href="/2019/03/13/springboot/Java-Springboot-使用druid连接池抛ClassNotFoundException/" class="article-nav-link">
+        <strong class="article-nav-caption">后一篇</strong>
+        <div class="article-nav-title">Java-Springboot-使用druid连接池抛ClassNotFoundException</div>
+      </a>
+    
+  </nav>
+
+
+  
+
+  
+    
+  <div class="gitalk" id="gitalk-container"></div>
+  <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+  <script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+  <script src="https://cdn.bootcss.com/blueimp-md5/2.10.0/js/md5.min.js"></script>
+  <script type="text/javascript">
+      var gitalk = new Gitalk({
+        clientID: 'bc0ff5f881c2c1afa71d',
+        clientSecret: 'a96846d2667475e0db3c61db92a091205ef02f21',
+        repo: 'gitalk',
+        owner: 'micocube',
+        admin: ['micocube'],
+        // id: location.pathname,      // Ensure uniqueness and length less than 50
+        id: md5(location.pathname),
+        distractionFreeMode: false  // Facebook-like distraction free mode
+      })
+
+  gitalk.render('gitalk-container')
+  </script>
+
+  
+
+</article>
+
+
+
+</section>
+  <footer class="footer">
+  
+  <div class="outer">
+    <ul class="list-inline">
+      <li>&copy; 2019 MicoCube</li>
+      <li>Powered by <a href="http://hexo.io/" target="_blank">Hexo</a></li>
+      <li>Theme  <a href="https://zhwangart.github.io">zhwangart</a></li>
+      <li><i class="fe fe-bar-chart"></i> <span id="busuanzi_value_site_pv"></span></li>
+      <li><i class="fe fe-smile-alt"></i> <span id="busuanzi_value_site_uv"></span></li>
+    </ul>
+  </div>
+</footer>
+</main>
+<aside class="sidebar">
+  <button class="navbar-toggle"></button>
+
+<nav class="navbar">
+  
+    <div class="logo">
+      <a href="/"><img src="/images/hexo.svg" alt="MicoCube"></a>
+    </div>
+  
+  <ul class="nav nav-main">
+    
+      <li class="nav-item">
+        <a class="nav-item-link" href="/">首页</a>
+      </li>
+    
+      <li class="nav-item">
+        <a class="nav-item-link" href="/archives">归档</a>
+      </li>
+    
+      <li class="nav-item">
+        <a class="nav-item-link" href="/gallery">相册</a>
+      </li>
+    
+      <li class="nav-item">
+        <a class="nav-item-link" href="/about">关于</a>
+      </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link nav-item-search" title="Search">
+        <i class="fe fe-search"></i>
+        搜索
+      </a>
+    </li>
+  </ul>
+</nav>
+
+<nav class="navbar navbar-bottom">
+  <ul class="nav">
+    <li class="nav-item">
+      
+        <a class="nav-item-link" target="_blank" href="/atom.xml" title="RSS Feed">
+          <i class="fe fe-feed"></i>
+        </a>
+      
+    </li>
+  </ul>
+</nav>
+
+<div class="search-form-wrap">
+  <div class="local-search local-search-plugin">
+  <input type="search" id="local-search-input" class="local-search-input" placeholder="Search...">
+  <div id="local-search-result" class="local-search-result"></div>
+</div>
+</div>
+</aside>
+  <script src="/js/jquery-2.0.3.min.js"></script>
+<script src="/js/lazyload.min.js"></script>
+<script src="/js/busuanzi-2.3.pure.min.js"></script>
+
+
+  <script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+  <script src="/js/search.js"></script>
+
+
+<script src="/js/ocean.js"></script>
+
+</body>
+</html>

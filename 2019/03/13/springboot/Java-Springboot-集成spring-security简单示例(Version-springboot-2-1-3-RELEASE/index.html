@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="utf-8">
+  
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <title>
+    Java-Springboot-集成spring-security简单示例(Version-springboot-2-1-3-RELEASE |
+    
+    MicoCube</title>
+  
+    <link rel="shortcut icon" href="/favicon.ico">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  
+    <link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+  
+  <script src="/js/pace.min.js"></script>
+</head>
+</html>
+<body>
+<main class="content">
+  <section class="outer">
+  <article id="post-springboot/Java-Springboot-集成spring-security简单示例(Version-springboot-2-1-3-RELEASE" class="article article-type-post" itemscope itemprop="blogPost">
+
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Java-Springboot-集成spring-security简单示例(Version-springboot-2-1-3-RELEASE
+    </h1>
+  
+
+      </header>
+    
+
+    
+      <div class="article-meta">
+        <a href="/2019/03/13/springboot/Java-Springboot-集成spring-security简单示例(Version-springboot-2-1-3-RELEASE/" class="article-date">
+  <time datetime="2019-03-13T07:03:32.000Z" itemprop="datePublished">2019-03-13</time>
+</a>
+        
+      </div>
+    
+
+    <div class="article-entry" itemprop="articleBody">
+      
+      
+      
+        <ul>
+<li>使用Idea的Spring Initializr或者<a href="https://start.spring.io/" target="_blank" rel="noopener">SpringBoot官网下载quickstart</a></li>
+<li><p>添加依赖</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&lt;dependency&gt;</span><br><span class="line">&lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;</span><br><span class="line">&lt;artifactId&gt;spring-boot-starter-security&lt;/artifactId&gt;</span><br><span class="line">&lt;/dependency&gt;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>新建控制器</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">import org.springframework.web.bind.annotation.GetMapping;</span><br><span class="line">import org.springframework.web.bind.annotation.RestController;</span><br><span class="line">@RestController</span><br><span class="line">public class UserController &#123;</span><br><span class="line">@GetMapping(&quot;/user&quot;)</span><br><span class="line">public String getUsers() &#123;</span><br><span class="line">return &quot;Hello Spring Security&quot;;</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>logback.xml</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</span><br><span class="line"></span><br><span class="line">&lt;configuration&gt;</span><br><span class="line">&lt;appender name=&quot;FILE&quot; class=&quot;ch.qos.logback.core.FileAppender&quot;&gt;</span><br><span class="line">&lt;file&gt;/data/www/file/logs/springboot.log&lt;/file&gt;</span><br><span class="line"></span><br><span class="line">&lt;encoder&gt;</span><br><span class="line">&lt;pattern&gt;%date %d&#123;HH: mm:ss.SSS&#125; %level [%thread] %logger&#123;10&#125; [%file:%line] %msg%n&lt;/pattern&gt;</span><br><span class="line">&lt;/encoder&gt;</span><br><span class="line">&lt;/appender&gt;</span><br><span class="line"></span><br><span class="line">&lt;appender name=&quot;STDOUT&quot; class=&quot;ch.qos.logback.core.ConsoleAppender&quot;&gt;</span><br><span class="line">&lt;encoder&gt;</span><br><span class="line">&lt;pattern&gt;%date %d&#123;HH: mm:ss.SSS&#125; %level [%thread] %logger&#123;10&#125; [%file:%line] %msg%n&lt;/pattern&gt;</span><br><span class="line">&lt;/encoder&gt;</span><br><span class="line">&lt;/appender&gt;</span><br><span class="line"></span><br><span class="line">&lt;root level=&quot;debug&quot;&gt;</span><br><span class="line">&lt;appender-ref ref=&quot;FILE&quot; /&gt;</span><br><span class="line">&lt;appender-ref ref=&quot;STDOUT&quot; /&gt;</span><br><span class="line">&lt;/root&gt;</span><br><span class="line">&lt;/configuration&gt;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>application.properties</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"># Server Domain-Port</span><br><span class="line">server.address=127.0.0.1</span><br><span class="line">server.port=9090</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>启动SpringBootApplication，springboot已经和spring-security集成了，如果直接访问<code>http://localhost:9090/user</code>会跳到登陆页面，这是spring-security自带的，但是我们并没有创建任何用户啊，spring-security有个默认的用户名<code>user</code>，密码在控制台<img src="https://upload-images.jianshu.io/upload_images/5143802-623559782ac1ee40.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="登陆页面"></p>
+</li>
+<li><p>默认密码在控制信息里,在控制台信息里搜索<code>Using generated</code>，当然你的程序生成的密码肯定和我的不一样</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Using generated security password: 6ae529ee-2281-4b66-8f30-b1ba0e7fec97</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>使用用户名和密码登陆后：<br><img src="https://upload-images.jianshu.io/upload_images/5143802-e344f72a1bc82b00.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="正常访问"></p>
+</li>
+<li><p><a href="https://gitee.com/micocube/springboot-security/tree/master/1_quickstart" target="_blank" rel="noopener">源码</a></p>
+</li>
+</ul>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2019/03/13/springboot/Java-Springboot-集成spring-security简单示例(Version-springboot-2-1-3-RELEASE/" data-id="cjt714hez0005f83dsucrjlwe" class="article-share-link">分享</a>
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/SpringBoot全家桶/">SpringBoot全家桶</a></li></ul>
+
+    </footer>
+
+  </div>
+
+  
+    
+  <nav class="article-nav">
+    
+      <a href="/2019/03/13/springboot/Java-Springboot-使用druid连接池抛ClassNotFoundException/" class="article-nav-link">
+        <strong class="article-nav-caption">前一篇</strong>
+        <div class="article-nav-title">
+          
+            Java-Springboot-使用druid连接池抛ClassNotFoundException
+          
+        </div>
+      </a>
+    
+    
+      <a href="/2019/03/13/springboot/Java-Springboot-集成spring-security自定义UserDetailsService(Version-springb/" class="article-nav-link">
+        <strong class="article-nav-caption">后一篇</strong>
+        <div class="article-nav-title">Java-Springboot-集成spring-security自定义UserDetailsService(Version-springb</div>
+      </a>
+    
+  </nav>
+
+
+  
+
+  
+    
+  <div class="gitalk" id="gitalk-container"></div>
+  <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+  <script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+  <script src="https://cdn.bootcss.com/blueimp-md5/2.10.0/js/md5.min.js"></script>
+  <script type="text/javascript">
+      var gitalk = new Gitalk({
+        clientID: 'bc0ff5f881c2c1afa71d',
+        clientSecret: 'a96846d2667475e0db3c61db92a091205ef02f21',
+        repo: 'gitalk',
+        owner: 'micocube',
+        admin: ['micocube'],
+        // id: location.pathname,      // Ensure uniqueness and length less than 50
+        id: md5(location.pathname),
+        distractionFreeMode: false  // Facebook-like distraction free mode
+      })
+
+  gitalk.render('gitalk-container')
+  </script>
+
+  
+
+</article>
+
+
+
+</section>
+  <footer class="footer">
+  
+  <div class="outer">
+    <ul class="list-inline">
+      <li>&copy; 2019 MicoCube</li>
+      <li>Powered by <a href="http://hexo.io/" target="_blank">Hexo</a></li>
+      <li>Theme  <a href="https://zhwangart.github.io">zhwangart</a></li>
+      <li><i class="fe fe-bar-chart"></i> <span id="busuanzi_value_site_pv"></span></li>
+      <li><i class="fe fe-smile-alt"></i> <span id="busuanzi_value_site_uv"></span></li>
+    </ul>
+  </div>
+</footer>
+</main>
+<aside class="sidebar">
+  <button class="navbar-toggle"></button>
+
+<nav class="navbar">
+  
+    <div class="logo">
+      <a href="/"><img src="/images/hexo.svg" alt="MicoCube"></a>
+    </div>
+  
+  <ul class="nav nav-main">
+    
+      <li class="nav-item">
+        <a class="nav-item-link" href="/">首页</a>
+      </li>
+    
+      <li class="nav-item">
+        <a class="nav-item-link" href="/archives">归档</a>
+      </li>
+    
+      <li class="nav-item">
+        <a class="nav-item-link" href="/gallery">相册</a>
+      </li>
+    
+      <li class="nav-item">
+        <a class="nav-item-link" href="/about">关于</a>
+      </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link nav-item-search" title="Search">
+        <i class="fe fe-search"></i>
+        搜索
+      </a>
+    </li>
+  </ul>
+</nav>
+
+<nav class="navbar navbar-bottom">
+  <ul class="nav">
+    <li class="nav-item">
+      
+        <a class="nav-item-link" target="_blank" href="/atom.xml" title="RSS Feed">
+          <i class="fe fe-feed"></i>
+        </a>
+      
+    </li>
+  </ul>
+</nav>
+
+<div class="search-form-wrap">
+  <div class="local-search local-search-plugin">
+  <input type="search" id="local-search-input" class="local-search-input" placeholder="Search...">
+  <div id="local-search-result" class="local-search-result"></div>
+</div>
+</div>
+</aside>
+  <script src="/js/jquery-2.0.3.min.js"></script>
+<script src="/js/lazyload.min.js"></script>
+<script src="/js/busuanzi-2.3.pure.min.js"></script>
+
+
+  <script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+  <script src="/js/search.js"></script>
+
+
+<script src="/js/ocean.js"></script>
+
+</body>
+</html>
